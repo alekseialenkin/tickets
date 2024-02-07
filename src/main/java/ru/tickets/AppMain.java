@@ -1,6 +1,5 @@
 package ru.tickets;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,15 +18,15 @@ public class AppMain {
         try (FileReader reader = new FileReader("tickets.json"); FileWriter fileWriter = new FileWriter("result.txt")) {
             Tickets tickets = JsonParser.parse(reader, Tickets.class);
             fileWriter.write("Задание 1.\n");
-            fileWriter.write(minFlyTime(tickets));
+            fileWriter.write(finMinFlyTime(tickets));
             fileWriter.write("Задание 2.\n");
-            fileWriter.write("Разница между средней ценой и медианой = " + difference(tickets));
+            fileWriter.write("Разница между средней ценой и медианой = " + getDifference(tickets));
         } catch (IOException e) {
             throw new RuntimeException("File not found");
         }
     }
 
-    private static int difference(Tickets tickets) {
+    private static int getDifference(Tickets tickets) {
         List<Integer> price = tickets.getTickets()
                 .stream()
                 .filter(ticket -> ticket.getOrigin().equals("VVO") && ticket.getDestination().equals("TLV"))
@@ -42,7 +41,7 @@ public class AppMain {
         return avg - median;
     }
 
-    private static String minFlyTime(Tickets tickets) {
+    private static String finMinFlyTime(Tickets tickets) {
         Map<String, Long> companyFlyTime = new HashMap<>();
         for (Ticket t : tickets.getTickets()) {
             companyFlyTime.put(t.getCarrier(), Long.MAX_VALUE);
