@@ -1,10 +1,9 @@
 package ru.tickets;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Tickets {
-    private List<Ticket> tickets = new ArrayList<>();
+    private List<Ticket> tickets;
 
     public Tickets(List<Ticket> tickets) {
         this.tickets = tickets;
