@@ -18,7 +18,7 @@ public class AppMain {
         try (FileReader reader = new FileReader("tickets.json"); FileWriter fileWriter = new FileWriter("result.txt")) {
             Tickets tickets = JsonParser.parse(reader, Tickets.class);
             fileWriter.write("Задание 1.\n");
-            fileWriter.write(finMinFlyTime(tickets));
+            fileWriter.write(findMinFlyTime(tickets));
             fileWriter.write("Задание 2.\n");
             fileWriter.write("Разница между средней ценой и медианой = " + getDifference(tickets));
         } catch (IOException e) {
@@ -41,7 +41,7 @@ public class AppMain {
         return avg - median;
     }
 
-    private static String finMinFlyTime(Tickets tickets) {
+    private static String findMinFlyTime(Tickets tickets) {
         Map<String, Long> companyFlyTime = new HashMap<>();
         for (Ticket t : tickets.getTickets()) {
             companyFlyTime.put(t.getCarrier(), Long.MAX_VALUE);
