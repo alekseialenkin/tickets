@@ -43,10 +43,14 @@ public class AppMain {
 
     private static String findMinFlyTime(Tickets tickets) {
         Map<String, Long> companyFlyTime = new HashMap<>();
-        for (Ticket t : tickets.getTickets()) {
+        List<Ticket> filteredList = tickets.getTickets()
+                .stream()
+                .filter(ticket -> ticket.getOrigin().equals("VVO") && ticket.getDestination().equals("TLV"))
+                .collect(Collectors.toList());
+        for (Ticket t : filteredList) {
             companyFlyTime.put(t.getCarrier(), Long.MAX_VALUE);
         }
-        for (Ticket t : tickets.getTickets()) {
+        for (Ticket t : filteredList) {
             long value = getTimeDifference(t.getDepartureTime(), t.getArrivalTime());
             if (value < companyFlyTime.get(t.getCarrier())) {
                 companyFlyTime.put(t.getCarrier(), value);
@@ -54,18 +58,18 @@ public class AppMain {
         }
         StringBuilder st = new StringBuilder();
         for (Map.Entry<String, Long> e : companyFlyTime.entrySet()) {
-            long hour = e.getValue() / 3600;
-            long min = (e.getValue() % 3600) / 60;
-            long sec = e.getValue() % 60;
+            long hour = e.getValue() / (60L * 60 * 1_000_000_000);
+            long min = (e.getValue() / (60L * 1_000_000_000)) % 60;
+            long sec = (e.getValue() / 1_000_000_000) % 60;
             st.append("Авиаперевозчик : ").append(e.getKey()).append(", время перелета : ").append(hour).append(" ч. ").append(min)
                     .append(" мин. ").append(sec).append(" с.").append("\n");
         }
         return st.toString();
     }
 
-    private static Long getTimeDifference(String departureTime, String arrivalTime) {
+    private static long getTimeDifference(String departureTime, String arrivalTime) {
         LocalTime departure = LocalTime.parse(departureTime, DateTimeFormatter.ofPattern("H:mm"));
         LocalTime arrival = LocalTime.parse(arrivalTime);
-        return Duration.between(departure, arrival).getSeconds();
+        return Duration.between(departure, arrival).toNanos();
     }
 }
